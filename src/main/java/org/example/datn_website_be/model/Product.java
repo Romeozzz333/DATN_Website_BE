@@ -30,9 +30,6 @@ public class Product extends BaseEntity {
     @Column
     private String baseUnit;
 
-    @Column
-    private boolean gender;
-
     @JsonBackReference(value = "categoryProductReference")
     @ManyToOne
     @JoinColumn(name = "id_category", referencedColumnName = "id")
@@ -62,4 +59,9 @@ public class Product extends BaseEntity {
     @OneToMany(mappedBy = "product")
     @JsonIgnore
     private List<CartDetail> cartDetails;
+
+    @JsonManagedReference(value = "productPromotionDetailReference")
+    @OneToMany(mappedBy = "product")
+    @JsonIgnore
+    private List<PromotionDetail> promotionDetails;
 }
