@@ -158,4 +158,8 @@ public class ProductService {
 //        }
 //        return productViewCustomerReponse.get();
 //    }
+public List<ProductViewCustomerReponse> getProductPriceRangeWithPromotion() {
+    List<ProductViewCustomerReponse> productViewCustomerReponses = productRepository.findAllActiveProductsWithPromotion();
+    return productViewCustomerReponses;
+}
 }

@@ -182,7 +182,7 @@ public class ProductRestAPI {
 //        }
 //    }
 
-//    @PostMapping("/get-name-product-by-id")
+    //    @PostMapping("/get-name-product-by-id")
 //    public ResponseEntity<?> getNameById(@RequestBody List<Long> ids) {
 //        try {
 //            return ResponseEntity.ok(productService.getProductNameById(ids));
@@ -196,5 +196,13 @@ public class ProductRestAPI {
 //                    );
 //        }
 //    }
-
+    @GetMapping("/productPriceRangePromotion")
+    public ResponseEntity<?> getProductPriceRangeWithPromotion() {
+        try {
+            List<ProductViewCustomerReponse> response = productService.getProductPriceRangeWithPromotion();
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }
