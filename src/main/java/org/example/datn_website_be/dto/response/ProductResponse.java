@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -32,5 +33,7 @@ public class ProductResponse {
     private String nameCategory;
 
     private String status;
+
+    private Date createdAt;
 
 }

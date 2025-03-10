@@ -46,11 +46,11 @@ public class ProductRestAPI {
         }
     }
 
-//    @GetMapping("/findProductProductDetailResponse")
-//    public List<ProductProductDetailResponse> findProductProductDetailResponse() {
-//        List<ProductProductDetailResponse> productResponse = productService.findProductProductDetailResponse();
-//        return productResponse;
-//    }
+    @GetMapping("/findProductProductDetailResponse")
+    public List<ProductResponse> findProductProductDetailResponse() {
+        List<ProductResponse> productResponse = productService.findProductProductDetailResponse();
+        return productResponse;
+    }
 //
 //    @GetMapping("/filterProductProductDetailResponse")
 //    public List<ProductProductDetailResponse> filterProductProductDetailResponse(
