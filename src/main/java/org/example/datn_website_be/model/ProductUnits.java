@@ -18,7 +18,7 @@ import java.util.List;
 public class ProductUnits extends BaseEntity{
 
     @Column
-    private String unnitName;
+    private String unitName;
 
     @Column
     private double conversionFactor;

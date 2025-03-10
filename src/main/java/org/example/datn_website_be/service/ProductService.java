@@ -30,10 +30,17 @@ public class ProductService {
     ProductRepository productRepository;
 
     @Autowired
+    ProductUnitsService productUnitsService;
+
+    @Autowired
+    ProductImageService productImageService;
+
+    @Autowired
     CategoryRepository categoryRepository;
 
     @Autowired
     RandomPasswordGeneratorService randomCodePromotion;
+
     @Autowired
     NotificationController notificationController;
 
@@ -46,14 +53,21 @@ public class ProductService {
         }
         Product product = Product.builder()
                 .name(productRequest.getName())
+                .baseUnit(productRequest.getBaseUnit())
+                .pricePerBaseUnit(productRequest.getPricePerBaseUnit())
+                .quantity(productRequest.getQuantity())
                 .category(category)
                 .build();
         product.setStatus(Status.ACTIVE.toString());
         Product saveProduct = productRepository.save(product);
-//        boolean checkProductDetail = productDetailService.createProductDetail(saveProduct, productRequest.getProductDetailRequest());
-//        if (!checkProductDetail) {
-//            throw new RuntimeException("Xảy ra lỗi khi thêm sản phẩm chi tiết");
-//        }
+        boolean checkImage = productImageService.createProductImage(saveProduct, productRequest.getListImages());
+        if (!checkImage) {
+            throw new RuntimeException("Xảy ra lỗi khi thêm ảnh cho sản phẩm chi tiết");
+        }
+        boolean checkProductDetail = productUnitsService.createProductUnits(saveProduct, productRequest.getProductUnits());
+        if (!checkProductDetail) {
+            throw new RuntimeException("Xảy ra lỗi khi thêm sản phẩm chi tiết");
+        }
     }
 
 //    @Transactional
@@ -88,9 +102,9 @@ public class ProductService {
         return optional.get();
     }
 
-//    public List<ProductProductDetailResponse> findProductProductDetailResponse() {
-//        return productRepository.findProductProductDetailResponse();
-//    }
+    public List<ProductResponse> findProductProductDetailResponse() {
+        return productRepository.findProductRequests();
+    }
 
 //    public List<ProductProductDetailResponse> filterProductProductDetailResponse(
 //            String search, String idCategory, String idBrand, String status) {
