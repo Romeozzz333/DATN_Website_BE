@@ -13,15 +13,8 @@ import java.util.List;
 public class ProductImageRestAPI {
     @Autowired
     ProductImageService productImageService;
-
-    @GetMapping("/listAllProductImage")
-    public List<ProductImageResponse> getAllProductImage() {
-        List<ProductImageResponse> productImage = productImageService.findAll();
-        return productImage;
-    }
-
     @GetMapping("/listProductImage")
-    public List<ProductImageResponse> findListImageByIdProductDetail(@RequestParam(value = "idProductDetail", required = false) Long id) {
+    public List<ProductImageResponse> findListImageByIdProductDetail(@RequestParam(value = "idProduct", required = false) Long id) {
         if (id == null) {
             id = 0L;
         }
