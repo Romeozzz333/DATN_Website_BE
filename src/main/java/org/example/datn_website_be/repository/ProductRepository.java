@@ -50,4 +50,5 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
             "WHERE p.status = 'ACTIVE'")
     List<ProductViewCustomerReponse> findAllActiveProductsWithPromotion();
 
+    Optional<Product> findByIdAndAndStatus(Long idProduct, String Status);
 }

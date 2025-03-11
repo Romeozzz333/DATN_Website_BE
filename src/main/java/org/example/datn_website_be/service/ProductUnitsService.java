@@ -25,9 +25,43 @@ public class ProductUnitsService {
                     .type(request.isType())
                     .build();
             productUnits.setStatus(Status.ACTIVE.toString());
-            ProductUnits saveProductUnits = productUnitsRepository.save(productUnits);
-            System.out.println("saveProductUnits"+saveProductUnits.getUnitName());
+            productUnitsRepository.save(productUnits);
         }
         return true;
+    }
+    @Transactional
+    public boolean updateProductUnits(Product product, List<ProductUnitsRequest> productUnitRequests) {
+        for (ProductUnitsRequest request : productUnitRequests) {
+            ProductUnits productUnits;
+            if(request.getId() == null){
+                productUnits = ProductUnits.builder()
+                    .unitName(request.getUnitName())
+                    .conversionFactor(request.getConversionFactor())
+                    .product(product)
+                    .type(request.isType())
+                    .build();
+            productUnits.setStatus(Status.ACTIVE.toString());
+            }else{
+                productUnits = productUnitsRepository.findById(request.getId()).get();
+                productUnits.setUnitName(request.getUnitName());
+                productUnits.setConversionFactor(request.getConversionFactor());
+                productUnits.setType(request.isType());
+            }
+            productUnitsRepository.save(productUnits);
+        }
+        return true;
+    }
+    @Transactional
+    public boolean deleteProductUnits(List<Long> idProductUnits) {
+        productUnitsRepository.deleteAllById(idProductUnits);
+        return true;
+    }
+
+    public List<ProductUnits> findProductUnitsById(Long id) {
+        List<ProductUnits> list = productUnitsRepository.findByProductId(id);
+        if (list.isEmpty()) {
+            throw new RuntimeException("Không tìm thấy tài nguyên sản phẩm trong hệ thống!");
+        }
+        return list;
     }
 }

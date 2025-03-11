@@ -14,6 +14,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductUnitsRequest {
+
+    private Long id;
+
     @NotBlank(message = "Tên đơn vị quy đổi không được để trống")
     @Size(max = 255, message = "Tên đơn vị quy đổi không được vượt quá 255 ký tự")
     private String unitName;

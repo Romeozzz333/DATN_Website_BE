@@ -1,5 +1,7 @@
 package org.example.datn_website_be.service;
 
+import org.example.datn_website_be.dto.request.UpdateProduct.UpdateProductProductUnitsRequest;
+import org.example.datn_website_be.model.ProductUnits;
 import org.springframework.transaction.annotation.Transactional;
 import org.example.datn_website_be.Enum.Status;
 import org.example.datn_website_be.dto.request.ProductRequest;
@@ -36,10 +38,16 @@ public class ProductService {
     ProductImageService productImageService;
 
     @Autowired
+    ProductImageRepository productImageRepository;
+
+    @Autowired
     CategoryRepository categoryRepository;
 
     @Autowired
     RandomPasswordGeneratorService randomCodePromotion;
+
+    @Autowired
+    ProductUnitsRepository productUnitsRepository;
 
     @Autowired
     NotificationController notificationController;
@@ -50,6 +58,9 @@ public class ProductService {
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy tài nguyên danh mục trong hệ thống!"));
         if (category.getStatus().equals(Status.INACTIVE.toString())) {
             throw new RuntimeException("Danh mục " + category.getName() + " không còn hoạt động");
+        }
+        if (productRequest.getListImages().isEmpty()) {
+            throw new RuntimeException("Danh sách hình ảnh không được để trống");
         }
         Product product = Product.builder()
                 .name(productRequest.getName())
@@ -70,29 +81,37 @@ public class ProductService {
         }
     }
 
-//    @Transactional
-//    public void updateProduct(UpdateProductRequest updateProductRequest) {
-//        Product product = productRepository.findById(updateProductRequest.getId())
-//                .orElseThrow(() -> new RuntimeException("Không tìm thấy tài nguyên sản phẩm trong hệ thống!"));
-//        Category category = categoryRepository.findById(updateProductRequest.getIdCategory())
-//                .orElseThrow(() -> new RuntimeException("Không tìm thấy tài nguyên danh mục trong hệ thống!"));
-//        if (!product.getCategory().getId().equals(category.getId())) {
-//            if (category.getStatus().equals(Status.INACTIVE.toString())) {
-//                throw new RuntimeException("Danh mục " + category.getName() + " không còn hoạt động");
-//            }
-//            product.setCategory(category);
-//        }
-//        product.setName(updateProductRequest.getName());
-//        product.setGender(updateProductRequest.isGender());
-//        if (updateProductRequest.getImage() != null) {
-//            product.setImageByte(updateProductRequest.getImage());
-//        }
-//        productRepository.save(product);
-//        if (!updateProductRequest.getProductDetailRequest().isEmpty()) {
-//            productDetailService.updateProduct(updateProductRequest.getProductDetailRequest());
-//        }
-//        notificationController.sendNotification();
-//    }
+    @Transactional
+    public void updateProduct(UpdateProductProductUnitsRequest updateProductProductUnitsRequest) {
+        Product product = productRepository.findById(updateProductProductUnitsRequest.getProductRequest().getId())
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy tài nguyên sản phẩm trong hệ thống!"));
+        Category category = categoryRepository.findById(updateProductProductUnitsRequest.getProductRequest().getIdCategory())
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy tài nguyên danh mục trong hệ thống!"));
+        if (!product.getCategory().getId().equals(category.getId())) {
+            if (category.getStatus().equals(Status.INACTIVE.toString())) {
+                throw new RuntimeException("Danh mục " + category.getName() + " không còn hoạt động");
+            }
+            product.setCategory(category);
+        }
+        product.setName(updateProductProductUnitsRequest.getProductRequest().getName());
+        product.setPricePerBaseUnit(updateProductProductUnitsRequest.getProductRequest().getPricePerBaseUnit());
+        product.setQuantity(updateProductProductUnitsRequest.getProductRequest().getQuantity());
+        product.setBaseUnit(updateProductProductUnitsRequest.getProductRequest().getBaseUnit());
+        product.setCategory(category);
+        Product saveProduct = productRepository.save(product);
+        boolean checkProductDetail = productUnitsService.updateProductUnits(saveProduct, updateProductProductUnitsRequest.getProductRequest().getProductUnits());
+        if (!checkProductDetail) {
+            throw new RuntimeException("Xảy ra lỗi khi thêm đơn vị quy đổi sản phẩm");
+        }
+        if (!updateProductProductUnitsRequest.getProductRequest().getListImages().isEmpty()) {
+            productImageRepository.deleteByProduct(saveProduct);
+            boolean checkImage = productImageService.createProductImage(saveProduct, updateProductProductUnitsRequest.getProductRequest().getListImages());
+            if (!checkImage) {
+                throw new RuntimeException("Xảy ra lỗi khi thêm ảnh cho sản phẩm chi tiết");
+            }
+        }
+        notificationController.sendNotification();
+    }
 
     public ProductResponse findProductById(Long id) {
         Optional<ProductResponse> optional = productRepository.findProductRequestsById(id);
@@ -106,51 +125,44 @@ public class ProductService {
         return productRepository.findProductRequests();
     }
 
-//    public List<ProductProductDetailResponse> filterProductProductDetailResponse(
-//            String search, String idCategory, String idBrand, String status) {
-//        return productRepository.findProductProductDetailResponse().stream()
-//                .filter(response ->
-//                        search == null ||
-//                                search.isEmpty() ||
-//                                (response.getName() != null && response.getName().toLowerCase().contains(search.trim().toLowerCase()))
-//                )
-//                .filter(response ->
-//                        idCategory == null ||
-//                                idCategory.isEmpty() ||
-//                                (response.getIdCategory() != null && response.getIdCategory().toString().contains(idCategory.trim()))
-//                )
-//                .filter(response ->
-//                        idBrand == null ||
-//                                idBrand.isEmpty() ||
-//                                (response.getIdBrand() != null && response.getIdBrand().toString().contains(idBrand.trim()))
-//                )
-//                .filter(response ->
-//                        status == null ||
-//                                status.isEmpty() ||
-//                                (response.getStatus() != null && response.getStatus().equalsIgnoreCase(status.trim().toLowerCase()))
-//                )
-//                .collect(Collectors.toList());
-//    }
+    public List<ProductResponse> filterProductProductDetailResponse(
+            String search, String idCategory, String status) {
+        return productRepository.findProductRequests().stream()
+                .filter(response ->
+                        search == null ||
+                                search.isEmpty() ||
+                                (response.getName() != null && response.getName().toLowerCase().contains(search.trim().toLowerCase()))
+                )
+                .filter(response ->
+                        idCategory == null ||
+                                idCategory.isEmpty() ||
+                                (response.getIdCategory() != null && response.getIdCategory().toString().contains(idCategory.trim()))
+                )
+                .filter(response ->
+                        status == null ||
+                                status.isEmpty() ||
+                                (response.getStatus() != null && response.getStatus().equalsIgnoreCase(status.trim().toLowerCase()))
+                )
+                .collect(Collectors.toList());
+    }
 
-//    @Transactional
-//    public Product updateStatus(Long id, boolean aBoolean) {
-//        Optional<Product> optionalProduct = productRepository.findById(id);
-//        if (!optionalProduct.isPresent()) {
-//            throw new RuntimeException("Không tìm thấy tài nguyên sản phẩm trong hệ thống!");
-//        }
-//        String newStatus = aBoolean ? Status.ACTIVE.toString() : Status.INACTIVE.toString();
-//        optionalProduct.get().setStatus(newStatus);
-//        Product product = productRepository.save(optionalProduct.get());
-//        List<ProductDetail> productDetails = productDetailRepository.findByProductId(id);
-//        for (ProductDetail detail : productDetails) {
-//            if (detail.getQuantity() > 0) {
-//                detail.setStatus(newStatus);
-//                productDetailRepository.save(detail);
-//            }
-//        }
-//        notificationController.sendNotification();
-//        return product;
-//    }
+    @Transactional
+    public Product updateStatus(Long id, boolean aBoolean) {
+        Optional<Product> optionalProduct = productRepository.findById(id);
+        if (!optionalProduct.isPresent()) {
+            throw new RuntimeException("Không tìm thấy tài nguyên sản phẩm trong hệ thống!");
+        }
+        String newStatus = aBoolean ? Status.ACTIVE.toString() : Status.INACTIVE.toString();
+        optionalProduct.get().setStatus(newStatus);
+        Product product = productRepository.save(optionalProduct.get());
+        List<ProductUnits> productUnits = productUnitsRepository.findByProductId(id);
+        for (ProductUnits units : productUnits) {
+            units.setStatus(newStatus);
+            productUnitsRepository.save(units);
+        }
+        notificationController.sendNotification();
+        return product;
+    }
 
 //    public Map<Long, String> getProductNameById(List<Long> listId) {
 //        Map<Long, String> mapName = new HashMap<>();

@@ -5,5 +5,8 @@ import org.example.datn_website_be.model.ProductUnits;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
+import java.util.List;
+
 public interface ProductUnitsRepository extends JpaRepository<ProductUnits, Long>{
+    List<ProductUnits> findByProductId(Long productId);
 }
