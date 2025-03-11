@@ -28,7 +28,7 @@ public class PaymentMethod extends BaseEntity {
     private String note;
 
     @Column
-    private Integer type;
+    private int type;
 
     @JsonIgnore
     @JsonManagedReference(value = "paymentMethodPayBillReference")

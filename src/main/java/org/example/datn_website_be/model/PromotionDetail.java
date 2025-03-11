@@ -22,7 +22,7 @@ import java.math.BigDecimal;
 public class PromotionDetail extends BaseEntity {
 
     @Column
-    private Integer quantity;
+    private int quantity;
 
     @JsonBackReference(value = "productPromotionDetailReference")
     @ManyToOne

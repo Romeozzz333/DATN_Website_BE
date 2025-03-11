@@ -16,6 +16,8 @@ import java.util.List;
 @AllArgsConstructor
 public class ProductRequest {
 
+    private Long id;
+
     @NotBlank(message = "Tên sản phẩm không được để trống")
     @Size(max = 255, message = "Tên sản phẩm không được vượt quá 255 ký tự")
     private String name;
@@ -31,8 +33,6 @@ public class ProductRequest {
     @Size(max = 255, message = "Tên đơn vị gốc không được vượt quá 255 ký tự")
     private String baseUnit;
 
-    @NotNull(message = "Danh sách hình ảnh không được để trống")
-    @Size(min = 1, message = "Phải có ít nhất một hình ảnh")
     private List<byte[]> listImages;
 
     @NotNull(message = "Danh mục không được để trống")

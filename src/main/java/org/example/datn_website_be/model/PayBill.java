@@ -26,7 +26,7 @@ public class PayBill extends BaseEntity {
     private String tradingCode;
 
     @Column
-    private Integer type;
+    private int type;
 
     @Column
     private String note;

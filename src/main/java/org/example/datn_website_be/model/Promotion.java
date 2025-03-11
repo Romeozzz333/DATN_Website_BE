@@ -33,7 +33,7 @@ public class Promotion extends BaseEntity {
     private String name;
 
     @Column
-    private Double value;
+    private double value;
 
     @Column
     private Integer type;

@@ -22,7 +22,7 @@ public class CartDetail extends BaseEntity {
     private String codeCart;
 
     @Column
-    private int quantity;
+    private double quantity;
 
     @JsonIgnore
     @ManyToOne

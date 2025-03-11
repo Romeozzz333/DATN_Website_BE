@@ -22,7 +22,7 @@ import java.math.BigDecimal;
 public class BillDetail extends BaseEntity {
 
     @Column
-    private Integer quantity;
+    private double quantity;
 
     @Column
     private BigDecimal priceDiscount;

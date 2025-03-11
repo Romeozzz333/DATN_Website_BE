@@ -34,7 +34,7 @@ public class Bill extends BaseEntity {
     private String note;
 
     @Column
-    private Integer type;
+    private int type;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column

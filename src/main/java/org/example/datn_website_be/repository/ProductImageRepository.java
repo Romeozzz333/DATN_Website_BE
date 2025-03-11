@@ -30,6 +30,6 @@ public interface ProductImageRepository extends JpaRepository<ProductImage, Long
             """)
     List<ProductImageResponse> listProductImageResponse();
 
-//    @Transactional
-//    void deleteByProductDetail(Product product);
+    @Transactional
+    void deleteByProduct(Product product);
 }

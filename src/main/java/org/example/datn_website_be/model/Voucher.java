@@ -40,13 +40,13 @@ public class Voucher extends BaseEntity {
     private Double value;
 
     @Column
-    private Integer quantity;
+    private int quantity;
 
     @Column
     private BigDecimal maximumDiscount;
 
     @Column
-    private Integer type;  // 0 = Phần trăm, 1 = Tiền
+    private int type;  // 0 = Phần trăm, 1 = Tiền
 
     @Column
     private BigDecimal minBillValue;

@@ -34,7 +34,7 @@ public class Address extends BaseEntity {
     private String address;
 
     @Column
-    private Integer type;
+    private int type;
     @JsonBackReference(value = "accountAddressReference")
     @ManyToOne
     @JoinColumn(name = "id_account", referencedColumnName = "id")

@@ -49,7 +49,7 @@ public class Account extends BaseEntity implements UserDetails {
     private String role;
 
     @Column
-    private Integer gender;
+    private int gender;
 
     @Column
     private Date birthday;
@@ -103,7 +103,6 @@ public class Account extends BaseEntity implements UserDetails {
         }
         return true;
     }
-
 
     @Override
     public boolean isCredentialsNonExpired() {
