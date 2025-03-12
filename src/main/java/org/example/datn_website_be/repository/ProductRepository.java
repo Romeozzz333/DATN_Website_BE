@@ -1,5 +1,6 @@
 package org.example.datn_website_be.repository;
 
+import org.example.datn_website_be.dto.response.PayProductDetailResponse;
 import org.example.datn_website_be.dto.response.ProductResponse;
 import org.example.datn_website_be.dto.response.ProductViewCustomerReponse;
 import org.example.datn_website_be.model.Product;
@@ -50,5 +51,37 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
             "WHERE p.status = 'ACTIVE'")
     List<ProductViewCustomerReponse> findAllActiveProductsWithPromotion();
 
+    @Query("SELECT new org.example.datn_website_be.dto.response.ProductViewCustomerReponse(" +
+            "p.id, " +
+            "p.name, " +
+            "p.quantity, " +
+            "p.baseUnit, " +
+            "c.id, " +
+            "c.name, " +
+            "p.pricePerBaseUnit, " +
+            "CAST(CASE " +
+            "    WHEN prod.status = 'ONGOING' AND pro.status = 'ONGOING' " +
+            "    THEN (p.pricePerBaseUnit * (1 - pro.value / 100)) " +
+            "    ELSE p.pricePerBaseUnit " +
+            "END AS BigDecimal)" +
+            ") " +
+            "FROM Product p " +
+            "INNER JOIN p.category c " +
+            "LEFT JOIN p.promotionDetails prod WITH prod.status = 'ONGOING' " +
+            "LEFT JOIN prod.promotion pro WITH pro.status = 'ONGOING' " +
+            "WHERE p.status = 'ACTIVE' AND p.id=:id")
+    Optional<ProductViewCustomerReponse> findProductPriceRangeWithPromotionByIdProduct(@Param("id") Long id);
+
     Optional<Product> findByIdAndAndStatus(Long idProduct, String Status);
+
+    @Query("SELECT NEW org.example.datn_website_be.dto.response.PayProductDetailResponse(" +
+            "p.id, p.name, p.quantity, p.pricePerBaseUnit, p.baseUnit, c.id, c.name, " +
+            "COALESCE(pro.id, NULL), COALESCE(pro.codePromotion, NULL), COALESCE(pro.value, NULL), " +
+            "COALESCE(pro.endAt, NULL), COALESCE(prod.id, NULL), COALESCE(prod.quantity, 0.0)) " +
+            "FROM Product p " +
+            "INNER JOIN p.category c " +
+            "LEFT JOIN p.promotionDetails prod WITH prod.status = 'ONGOING' " +
+            "LEFT JOIN prod.promotion pro WITH pro.status = 'ONGOING' " +
+            "WHERE p.status = 'ACTIVE' AND p.id = :idProduct")
+    Optional<PayProductDetailResponse> findPayProductDetailByIdProductDetail(@Param("idProduct") Long idProduct);
 }

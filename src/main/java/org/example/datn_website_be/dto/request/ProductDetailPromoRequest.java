@@ -6,13 +6,12 @@ import lombok.*;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class CartRequest {
+public class ProductDetailPromoRequest {
     @NotNull(message = "Id của sản phẩm là bắt buộc")
     private Long idProduct;
-
     @NotNull(message = "Số lượng của sản phẩm chi tiết là bắt buộc")
     @Positive(message = "Số lượng phải lớn hơn 0")
     private Integer quantity;
