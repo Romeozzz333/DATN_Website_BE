@@ -14,8 +14,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductUnitsRequest {
-
-    private Long id;
+    private Long id; // Không thêm @NotNull để cho phép null khi tạo mới
 
     @NotBlank(message = "Tên đơn vị quy đổi không được để trống")
     @Size(max = 255, message = "Tên đơn vị quy đổi không được vượt quá 255 ký tự")
@@ -23,8 +22,7 @@ public class ProductUnitsRequest {
 
     @NotNull(message = "Số lượng không được để trống")
     @Min(value = 0, message = "Số lượng phải lớn hơn hoặc bằng 0")
-    private double conversionFactor;
-
+    private Double conversionFactor; // Đổi sang Double để khớp với dữ liệu FE
 
     private boolean type;
 }
