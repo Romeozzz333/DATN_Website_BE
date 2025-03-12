@@ -16,8 +16,55 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProductUntisRestAPI {
     @Autowired
     ProductUnitsService productUnitsService;
+    @GetMapping("/findListProductUnitsById")
+    public ResponseEntity<?> findListProductUnitsByIdByIdProduct(@RequestParam(value = "idProductUnits", required = false) Long id) {
+        try {
+            if (id == null) {
+                return ResponseEntity.badRequest().body(
+                        Response.builder()
+                                .status(HttpStatus.BAD_REQUEST.toString())
+                                .mess("Lỗi: ID không được để trống!")
+                                .build()
+                );
+            }
+            return ResponseEntity.ok(productUnitsService.findProductUnitsById(id));
+        } catch (RuntimeException e) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body(Response.builder()
+                            .status(HttpStatus.CONFLICT.toString())
+                            .mess(e.getMessage())
+                            .build()
+                    );
+        }
+    }
     @GetMapping("/findProductUnitsById")
-    public ResponseEntity<?> findProductResponseById(@RequestParam(value = "idProductUnits", required = false) Long id) {
+    public ResponseEntity<?> findProductUnitsById(@RequestParam(value = "idProductUnits", required = false) Long id) {
+        try {
+            if (id == null) {
+                return ResponseEntity.badRequest().body(
+                        Response.builder()
+                                .status(HttpStatus.BAD_REQUEST.toString())
+                                .mess("Lỗi: ID không được để trống!")
+                                .build()
+                );
+            }
+            return ResponseEntity.ok(productUnitsService.findByProductUnits(id));
+        } catch (RuntimeException e) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body(Response.builder()
+                            .status(HttpStatus.CONFLICT.toString())
+                            .mess(e.getMessage())
+                            .build()
+                    );
+        }
+    }
+    @GetMapping("/findProductResponseByIdAndType")
+    public ResponseEntity<?> findProductResponseByIdAndType(
+            @RequestParam(value = "idProductUnits", required = false) Long id,
+            @RequestParam(value = "type", required = false) boolean type
+    ) {
         try {
             if (id == null) {
                 return ResponseEntity.badRequest().body(

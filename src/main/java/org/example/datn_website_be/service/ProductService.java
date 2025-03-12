@@ -1,5 +1,7 @@
 package org.example.datn_website_be.service;
 
+import org.example.datn_website_be.dto.request.CartRequest;
+import org.example.datn_website_be.dto.request.ProductDetailPromoRequest;
 import org.example.datn_website_be.dto.request.UpdateProduct.UpdateProductProductUnitsRequest;
 import org.example.datn_website_be.model.ProductUnits;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,10 +21,7 @@ import org.springframework.stereotype.Service;
 
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -110,6 +109,9 @@ public class ProductService {
                 throw new RuntimeException("Xảy ra lỗi khi thêm ảnh cho sản phẩm chi tiết");
             }
         }
+        if (!updateProductProductUnitsRequest.getIdProductUnits().isEmpty()) {
+            productUnitsService.deleteProductUnits(updateProductProductUnitsRequest.getIdProductUnits());
+        }
         notificationController.sendNotification();
     }
 
@@ -177,15 +179,54 @@ public class ProductService {
         return productRepository.findProductRequests();
     }
 
-//    public ProductViewCustomerReponse getFindProductPriceRangeWithPromotionByIdProduct(Long idProduct) {
-//        Optional<ProductViewCustomerReponse> productViewCustomerReponse = productDetailRepository.findProductPriceRangeWithPromotionByIdProduct(idProduct);
-//        if (productViewCustomerReponse.isEmpty()) {
-//            throw new RuntimeException("Không tìm thấy tài nguyên sản phẩm trong hệ thống!");
-//        }
-//        return productViewCustomerReponse.get();
-//    }
-public List<ProductViewCustomerReponse> getProductPriceRangeWithPromotion() {
-    List<ProductViewCustomerReponse> productViewCustomerReponses = productRepository.findAllActiveProductsWithPromotion();
-    return productViewCustomerReponses;
-}
+    public ProductViewCustomerReponse getFindProductPriceRangeWithPromotionByIdProduct(Long idProduct) {
+        Optional<ProductViewCustomerReponse> productViewCustomerReponse = productRepository.findProductPriceRangeWithPromotionByIdProduct(idProduct);
+        if (productViewCustomerReponse.isEmpty()) {
+            throw new RuntimeException("Không tìm thấy tài nguyên sản phẩm trong hệ thống!");
+        }
+        return productViewCustomerReponse.get();
+    }
+
+    public List<ProductViewCustomerReponse> getProductPriceRangeWithPromotion() {
+        List<ProductViewCustomerReponse> productViewCustomerReponses = productRepository.findAllActiveProductsWithPromotion();
+        return productViewCustomerReponses;
+    }
+    public List<PayProductDetailResponse> findPayProductDetailByIdProductDetail(List<CartRequest> cartRequests) {
+        List<PayProductDetailResponse> list = new ArrayList<>();
+
+        for (CartRequest request : cartRequests) {
+            try {
+                Optional<PayProductDetailResponse> optional = productRepository.findPayProductDetailByIdProductDetail(request.getIdProduct());
+                if (!optional.isPresent()) {
+                    list.add(new PayProductDetailResponse(
+                            request.getIdProduct(),
+                            request.getQuantity(),
+                            "Không tìm thấy tài nguyên sản phẩm!"
+                    ));
+                    continue;
+                }
+
+                PayProductDetailResponse payProductDetailResponse = optional.get();
+                if (payProductDetailResponse.getQuantityProduct() < request.getQuantity()) {
+                    list.add(new PayProductDetailResponse(
+                            request.getIdProduct(),
+                            request.getQuantity(),
+                            "Sản phẩm " + payProductDetailResponse.getNameProduct() + " không đủ số lượng!"
+                    ));
+                    continue;
+                }
+
+                payProductDetailResponse.setQuantityBuy(request.getQuantity());
+                list.add(payProductDetailResponse);
+            } catch (Exception e) {
+                list.add(new PayProductDetailResponse(
+                        request.getIdProduct(),
+                        request.getQuantity(),
+                        "Lỗi xử lý sản phẩm: " + e.getMessage()
+                ));
+            }
+        }
+        return list;
+    }
+
 }

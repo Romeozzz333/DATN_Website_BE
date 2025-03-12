@@ -11,10 +11,10 @@ public class NotificationController {
 
     private final Sinks.Many<String> sink = Sinks.many().multicast().onBackpressureBuffer();
 
-//    @GetMapping(value = "/sse/notifications", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-//    public Flux<String> streamNotifications() {
-//        return sink.asFlux(); // Trả về Flux để phát dữ liệu
-//    }
+    @GetMapping(value = "/sse/notifications", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<String> streamNotifications() {
+        return sink.asFlux(); // Trả về Flux để phát dữ liệu
+    }
 
     public void sendNotification() {
         sink.tryEmitNext("UPDATE_CART");

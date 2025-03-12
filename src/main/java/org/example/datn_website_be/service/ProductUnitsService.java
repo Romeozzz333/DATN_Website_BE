@@ -59,9 +59,15 @@ public class ProductUnitsService {
 
     public List<ProductUnits> findProductUnitsById(Long id) {
         List<ProductUnits> list = productUnitsRepository.findByProductId(id);
-        if (list.isEmpty()) {
-            throw new RuntimeException("Không tìm thấy tài nguyên sản phẩm trong hệ thống!");
-        }
         return list;
+    }
+    public List<ProductUnits> findByProductIdAndType(Long id,boolean type) {
+        List<ProductUnits> list = productUnitsRepository.findByProductIdAndType(id, type);
+        return list;
+    }
+    public ProductUnits findByProductUnits(Long id) {
+        ProductUnits productUnits = productUnitsRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy tài nguyên sản phẩm trong hệ thống!"));;
+        return productUnits;
     }
 }

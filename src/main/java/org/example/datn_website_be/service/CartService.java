@@ -1,7 +1,6 @@
 package org.example.datn_website_be.service;
 
 import org.example.datn_website_be.Enum.Status;
-import org.example.datn_website_be.dto.request.CartRequest;
 import org.example.datn_website_be.dto.response.CartResponse;
 import org.example.datn_website_be.model.Account;
 import org.example.datn_website_be.model.Cart;
@@ -30,11 +29,12 @@ public class CartService {
     }
     public CartResponse getCartResponseByAccountId() {
         Long idEmployees = getUseLogin().getId();
+        if(idEmployees == null){
+            new RuntimeException("Lỗi đăng nhập!");
+        }
         Optional<CartResponse> cartResponse = cartRepository.CartResponse(idEmployees);
         if (cartResponse.isEmpty()) {
-            CartRequest cartRequest = new CartRequest();
-            cartRequest.setIdAccount(idEmployees);
-            Cart cart = cartRepository.save(convertCartRequestDTO(cartRequest));
+            Cart cart = cartRepository.save(convertCartRequestDTO(idEmployees));
             CartResponse newCartResponse = new CartResponse();
             newCartResponse.setId(cart.getId());
             newCartResponse.setIdAccount(cart.getAccount().getId());
@@ -47,9 +47,7 @@ public class CartService {
     public Cart getCartByAccountId(long accountId) {
         Optional<Cart> cartOptional = cartRepository.findByAccount_Id(accountId);
         if (cartOptional.isEmpty()) {
-            CartRequest cartRequest = new CartRequest();
-            cartRequest.setIdAccount(accountId);
-            return cartRepository.save(convertCartRequestDTO(cartRequest));
+            return cartRepository.save(convertCartRequestDTO(accountId));
         } else {
             return cartOptional.get();
         }
@@ -63,8 +61,8 @@ public class CartService {
         }
     }
 
-    public Cart convertCartRequestDTO(CartRequest cartRequest) {
-        Account account = accountRepository.findById(cartRequest.getIdAccount())
+    public Cart convertCartRequestDTO(Long idEmployees) {
+        Account account = accountRepository.findById(idEmployees)
                 .orElseThrow(() -> new RuntimeException("Không tìm tài khoản này!"));
         Cart cart = Cart.builder()
                 .account(account)

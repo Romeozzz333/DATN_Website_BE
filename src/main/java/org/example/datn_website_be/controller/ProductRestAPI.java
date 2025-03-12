@@ -1,5 +1,7 @@
 package org.example.datn_website_be.controller;
 import jakarta.validation.Valid;
+import org.example.datn_website_be.dto.request.CartRequest;
+import org.example.datn_website_be.dto.request.ProductDetailPromoRequest;
 import org.example.datn_website_be.dto.request.ProductRequest;
 import org.example.datn_website_be.dto.request.UpdateProduct.UpdateProductProductUnitsRequest;
 import org.example.datn_website_be.dto.response.*;
@@ -135,7 +137,6 @@ public class ProductRestAPI {
         }
     }
 
-    // dùng cho sale sản phẩm
     @GetMapping("/listProduct")
     public List<ProductResponse> getAllProduct() {
         List<ProductResponse> productResponse = productService.findProductRequests();
@@ -149,29 +150,29 @@ public class ProductRestAPI {
                 .collect(Collectors.toList());
     }
 
-//    @GetMapping("/findProductPriceRangePromotion")
-//    public ResponseEntity<?> findProductPriceRangePromotion(@RequestParam(value = "idProduct", required = false) Long idProduct) {
-//        try {
-//            if (idProduct == null) {
-//                return ResponseEntity.badRequest().body(
-//                        Response.builder()
-//                                .status(HttpStatus.BAD_REQUEST.toString())
-//                                .mess("Lỗi: ID sản phẩm không được để trống!")
-//                                .build()
-//                );
-//            }
-//            ProductViewCustomerReponse productViewCustomerReponse = productService.getFindProductPriceRangeWithPromotionByIdProduct(idProduct);
-//            return ResponseEntity.ok(productViewCustomerReponse);
-//        } catch (RuntimeException e) {
-//            return ResponseEntity
-//                    .status(HttpStatus.CONFLICT)
-//                    .body(Response.builder()
-//                            .status(HttpStatus.CONFLICT.toString())
-//                            .mess(e.getMessage())
-//                            .build()
-//                    );
-//        }
-//    }
+    @GetMapping("/findProductPriceRangePromotion")
+    public ResponseEntity<?> findProductPriceRangePromotion(@RequestParam(value = "idProduct", required = false) Long idProduct) {
+        try {
+            if (idProduct == null) {
+                return ResponseEntity.badRequest().body(
+                        Response.builder()
+                                .status(HttpStatus.BAD_REQUEST.toString())
+                                .mess("Lỗi: ID sản phẩm không được để trống!")
+                                .build()
+                );
+            }
+            ProductViewCustomerReponse productViewCustomerReponse = productService.getFindProductPriceRangeWithPromotionByIdProduct(idProduct);
+            return ResponseEntity.ok(productViewCustomerReponse);
+        } catch (RuntimeException e) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body(Response.builder()
+                            .status(HttpStatus.CONFLICT.toString())
+                            .mess(e.getMessage())
+                            .build()
+                    );
+        }
+    }
 
     //    @PostMapping("/get-name-product-by-id")
 //    public ResponseEntity<?> getNameById(@RequestBody List<Long> ids) {
@@ -194,6 +195,37 @@ public class ProductRestAPI {
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/listPayProduct")
+    public ResponseEntity<?> listPayProductDetail(
+            @RequestBody List<@Valid CartRequest> cartRequests,
+            BindingResult result) {
+        try {
+            if (cartRequests == null || cartRequests.isEmpty()) {
+                return ResponseEntity.badRequest().body(
+                        Response.builder()
+                                .status(HttpStatus.BAD_REQUEST.toString())
+                                .mess("Danh sách sản phẩm không được để trống!")
+                                .build()
+                );
+            }
+            if (result.hasErrors()) {
+                List<String> errors = result.getAllErrors().stream()
+                        .map(error -> error.getDefaultMessage())
+                        .collect(Collectors.toList());
+                return ResponseEntity.badRequest().body(errors);
+            }
+            return ResponseEntity.ok(productService.findPayProductDetailByIdProductDetail(cartRequests));
+        } catch (RuntimeException e) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body(Response.builder()
+                            .status(HttpStatus.CONFLICT.toString())
+                            .mess(e.getMessage())
+                            .build()
+                    );
         }
     }
 }
