@@ -194,7 +194,13 @@ public class ProductRestAPI {
             List<ProductViewCustomerReponse> response = productService.getProductPriceRangeWithPromotion();
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body(Response.builder()
+                            .status(HttpStatus.CONFLICT.toString())
+                            .mess(e.getMessage())
+                            .build()
+                    );
         }
     }
 
@@ -218,6 +224,41 @@ public class ProductRestAPI {
                 return ResponseEntity.badRequest().body(errors);
             }
             return ResponseEntity.ok(productService.findPayProductDetailByIdProductDetail(cartRequests));
+        } catch (RuntimeException e) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body(Response.builder()
+                            .status(HttpStatus.CONFLICT.toString())
+                            .mess(e.getMessage())
+                            .build()
+                    );
+        }
+    }
+    @GetMapping("/ExportProduct")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> getProductPriceRangeWithPromotion(
+            @RequestParam(value = "idProduct", required = false) Long id,
+            @RequestParam(value = "quantity", required = false) double quantity
+    ) {
+        try {
+            if (id == null) {
+                return ResponseEntity.badRequest().body(
+                        Response.builder()
+                                .status(HttpStatus.BAD_REQUEST.toString())
+                                .mess("Lỗi: ID sản phẩm không được để trống!")
+                                .build()
+                );
+            }
+            if (quantity <= 0.0) {
+                return ResponseEntity.badRequest().body(
+                        Response.builder()
+                                .status(HttpStatus.BAD_REQUEST.toString())
+                                .mess("Lỗi: số lượng hủy phải lớn hơn 0!")
+                                .build()
+                );
+            }
+            productService.ExportProduct(id,quantity);
+            return ResponseEntity.ok("Xuất hủy thành công!");
         } catch (RuntimeException e) {
             return ResponseEntity
                     .status(HttpStatus.CONFLICT)
