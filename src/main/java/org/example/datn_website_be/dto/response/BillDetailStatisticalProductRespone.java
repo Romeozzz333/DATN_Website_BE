@@ -19,7 +19,7 @@ public class BillDetailStatisticalProductRespone {
 
     private String nameProduct;
 
-    private Integer quantity;
+    private double quantity;
 
     private BigDecimal priceDiscount;
 

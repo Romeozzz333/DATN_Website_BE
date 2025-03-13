@@ -29,7 +29,7 @@ public class PayProductDetailResponse {
 
     private String codePromotion;
 
-    private Double value;
+    private Integer value;
 
     private Date endAtByPromotion;
 
@@ -41,7 +41,7 @@ public class PayProductDetailResponse {
 
     private String error;
 
-    public PayProductDetailResponse(Long idProduct, String nameProduct,double quantityProduct, BigDecimal pricePerBaseUnit,String baseUnit,Long idCategory,String nameCategory ,Long idPromotion, String codePromotion, Double value, Date endAtByPromotion, Long idPromotionDetail, double quantityPromotionDetail) {
+    public PayProductDetailResponse(Long idProduct, String nameProduct,double quantityProduct, BigDecimal pricePerBaseUnit,String baseUnit,Long idCategory,String nameCategory ,Long idPromotion, String codePromotion, Integer value, Date endAtByPromotion, Long idPromotionDetail, double quantityPromotionDetail) {
         this.idProduct = idProduct;
         this.nameProduct = nameProduct;
         this.quantityProduct = quantityProduct;

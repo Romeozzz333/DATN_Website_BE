@@ -14,5 +14,5 @@ public class ProductDetailPromoRequest {
     private Long idProduct;
     @NotNull(message = "Số lượng của sản phẩm chi tiết là bắt buộc")
     @Positive(message = "Số lượng phải lớn hơn 0")
-    private Integer quantity;
+    private double quantity;
 }

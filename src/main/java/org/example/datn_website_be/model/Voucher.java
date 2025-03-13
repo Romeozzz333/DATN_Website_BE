@@ -37,7 +37,7 @@ public class Voucher extends BaseEntity {
     private String note;
 
     @Column
-    private Double value;
+    private Integer value;
 
     @Column
     private int quantity;

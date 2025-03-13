@@ -21,7 +21,7 @@ public class PromotionResponse {
 
     private String name;
 
-    private Double value;
+    private Integer value;
 
     private Integer type;
 

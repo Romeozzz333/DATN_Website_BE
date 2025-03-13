@@ -34,13 +34,13 @@ public class CartDetailProductDetailResponse {
 
     private String codePromotion;
 
-    private Double value;
+    private Integer value;
 
     private Date endAtByPromotion;
 
     private Long idPromotionDetail;
 
-    private Integer quantityPromotionDetail;
+    private double quantityPromotionDetail;
 
     public BigDecimal calculatePricePerProductDetail() {
         BigDecimal price = pricePerBaseUnit;
