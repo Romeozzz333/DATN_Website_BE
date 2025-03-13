@@ -25,7 +25,7 @@ public class VoucherResponse {
 
     private String note;
 
-    private Double value;
+    private Integer value;
 
     private Integer quantity;
 

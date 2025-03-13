@@ -29,7 +29,7 @@ public class BillDetailResponse {
 
     private String nameColor;
 
-    private Integer quantity;
+    private double quantity;
 
     private BigDecimal totalAmount;
 

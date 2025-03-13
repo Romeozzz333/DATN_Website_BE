@@ -19,7 +19,8 @@ public interface PromotionDetailRepository extends JpaRepository<PromotionDetail
 
     @Query("""
     SELECT new org.example.datn_website_be.dto.response.ProductPromotionResponse(
-    p.id,p.name,p.pricePerBaseUnit,p.quantity,p.baseUnit,pro.id,pro.codePromotion,pro.value,pro.endAt,prod.id,prod.quantity,prod.status
+    p.id,p.name,p.pricePerBaseUnit,p.quantity,p.baseUnit,
+    pro.id,pro.codePromotion,pro.value,pro.endAt,prod.id,prod.quantity,prod.status
     )
     FROM PromotionDetail prod
     INNER JOIN prod.promotion pro
@@ -28,12 +29,12 @@ public interface PromotionDetailRepository extends JpaRepository<PromotionDetail
     """)
     List<ProductPromotionResponse> findProductByIdPromotion(@Param("idPromotion") Long idPromotion);
     @Query("SELECT NEW org.example.datn_website_be.dto.response.ProductPromotionResponse(" +
-            "p.id,p.name,p.pricePerBaseUnit,p.quantity,p.baseUnit,pro.id,pro.codePromotion,pro.value,pro.endAt,prod.id,prod.quantity,prod.status)" +
+            "p.id,p.name,p.pricePerBaseUnit,p.quantity,p.baseUnit, " +
+            "pro.id,pro.codePromotion,pro.value,pro.endAt,prod.id,prod.quantity,prod.status) " +
             "FROM Product p " +
-            "INNER JOIN p.category c " +
-            "LEFT JOIN p.promotionDetails prod WITH prod.status = 'ONGOING'" +
-            "LEFT JOIN prod.promotion pro WITH pro.status = 'ONGOING' " +
-            "WHERE p.status = 'ACTIVE'  AND p.id=:idProduct")
+            " JOIN p.promotionDetails prod WITH prod.status = 'ONGOING' " +
+            " JOIN prod.promotion pro WITH pro.status = 'ONGOING' " +
+            "WHERE p.status = 'ACTIVE' AND p.id = :idProduct")
     Optional<ProductPromotionResponse> findProductDetailByIdProduct(@Param("idProduct") Long idProduct);
 
     Optional<PromotionDetail> findByIdAndAndStatus(Long id, String status);

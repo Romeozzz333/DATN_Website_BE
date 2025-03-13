@@ -28,8 +28,7 @@ public class PromotionService {
     PromotionRepository promotionRepository;
     @Autowired
     PromotionDetailService promotionDetailService;
-//    @Autowired
-//    ProductDetailRepository productDetailRepository;
+
     @Autowired
     RandomPasswordGeneratorService randomCodePromotion;
     @Autowired

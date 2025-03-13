@@ -24,7 +24,7 @@ public class PromotionRequest {
     @NotNull(message = "Giá trị khuyến mãi là bắt buộc")
     @Positive(message = "Giá trị phải lớn hơn 0")
     @Max(value = 99, message = "Giá trị phải nhỏ hơn 100")
-    private Double value;
+    private Integer value;
 
     private Integer type;
 

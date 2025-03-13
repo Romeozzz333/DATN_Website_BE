@@ -46,7 +46,7 @@ public class BillResponse {
 
     private String nameVoucher;
 
-    private Double value;
+    private Integer value;
 
     private Long idCustomer;
 

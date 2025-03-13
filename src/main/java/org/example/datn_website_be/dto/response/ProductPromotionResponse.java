@@ -28,13 +28,13 @@ public class ProductPromotionResponse {
 
     private String codePromotion;
 
-    private Double value;
+    private Integer value;
 
     private Date endAtByPromotion;
 
     private Long idPromotionDetail;
 
-    private Integer quantityPromotionDetail;
+    private double quantityPromotionDetail;
 
     private String status;
 

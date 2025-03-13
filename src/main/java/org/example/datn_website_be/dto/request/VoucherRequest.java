@@ -40,7 +40,7 @@ public class VoucherRequest {
     @NotNull(message = "Giá trị là bắt buộc")
     @DecimalMin(value = "1", inclusive = true, message = "Giá trị tối thiểu 1%")
     @DecimalMax(value = "100", inclusive = false, message = "Giá trị tối đa 99%")
-    private Double value;
+    private Integer value;
 
     @NotNull(message = "Số lượng là bắt buộc")
     @Min(value = 1, message = "Số lượng tối thiểu là 1")
