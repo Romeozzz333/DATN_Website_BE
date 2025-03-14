@@ -227,6 +227,10 @@ public class ProductService {
         return productRepository.findProductRequests();
     }
 
+    public List<ProductPromotionResponse> findProductPromotion() {
+        return productRepository.findProductPromotion();
+    }
+
     public ProductViewCustomerReponse getFindProductPriceRangeWithPromotionByIdProduct(Long idProduct) {
         Optional<ProductViewCustomerReponse> productViewCustomerReponse = productRepository.findProductPriceRangeWithPromotionByIdProduct(idProduct);
         if (productViewCustomerReponse.isEmpty()) {

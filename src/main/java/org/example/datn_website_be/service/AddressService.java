@@ -1,5 +1,6 @@
 package org.example.datn_website_be.service;
 
+import org.example.datn_website_be.Enum.Role;
 import org.example.datn_website_be.dto.response.AddressResponse;
 import org.example.datn_website_be.repository.AccountRepository;
 import org.example.datn_website_be.repository.AddressRepository;
@@ -58,6 +59,10 @@ public class AddressService {
             address.setType(1);
         } else {
             // Nếu đã có địa chỉ, set type = 0 cho địa chỉ mới
+            Account account = accountRepository.findById(address.getAccount().getId()).get();
+            if (!account.getRole().equalsIgnoreCase(Role.CUSTOMER.toString())){
+                throw new RuntimeException("Quản lý và nhân viên chỉ có 1 địa chỉ");
+            }
             address.setType(0);
         }
 
@@ -143,7 +148,10 @@ public class AddressService {
         // Bước 1: Kiểm tra địa chỉ có tồn tại không
         Address address = addressRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Địa chỉ không tồn tại!"));
-
+        Account account = accountRepository.findById(address.getAccount().getId()).get();
+        if (!account.getRole().equalsIgnoreCase(Role.CUSTOMER.toString())){
+            throw new RuntimeException("Quản lý và nhân viên mặc định có 1 địa chỉ");
+        }
         // Bước 2: Xóa địa chỉ
         addressRepository.delete(address);
 

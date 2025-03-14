@@ -32,8 +32,8 @@ public interface PromotionDetailRepository extends JpaRepository<PromotionDetail
             "p.id,p.name,p.pricePerBaseUnit,p.quantity,p.baseUnit, " +
             "pro.id,pro.codePromotion,pro.value,pro.endAt,prod.id,prod.quantity,prod.status) " +
             "FROM Product p " +
-            " JOIN p.promotionDetails prod WITH prod.status = 'ONGOING' " +
-            " JOIN prod.promotion pro WITH pro.status = 'ONGOING' " +
+            "JOIN p.promotionDetails prod WITH prod.status = 'ONGOING' " +
+            "JOIN prod.promotion pro WITH pro.status = 'ONGOING' " +
             "WHERE p.status = 'ACTIVE' AND p.id = :idProduct")
     Optional<ProductPromotionResponse> findProductDetailByIdProduct(@Param("idProduct") Long idProduct);
 

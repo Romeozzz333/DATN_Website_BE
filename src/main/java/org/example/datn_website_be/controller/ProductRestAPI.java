@@ -52,7 +52,15 @@ public class ProductRestAPI {
         List<ProductResponse> productResponse = productService.findProductProductDetailResponse();
         return productResponse;
     }
-
+    @GetMapping("/listProductPromotion")
+    public ResponseEntity<?> getProductPromotion() {
+        try {
+            List<ProductPromotionResponse> productDetails = productService.findProductPromotion();
+            return ResponseEntity.ok(productDetails);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
     @GetMapping("/filterProductProductDetailResponse")
     public List<ProductResponse> filterProductProductDetailResponse(
             @RequestParam("search") String search,
