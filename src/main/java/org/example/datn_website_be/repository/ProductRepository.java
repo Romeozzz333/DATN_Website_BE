@@ -95,4 +95,14 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
             "LEFT JOIN prod.promotion pro WITH pro.status = 'ONGOING' " +
             "WHERE p.status = 'ACTIVE'")
     List<ProductPromotionResponse> findProductPromotion();
+
+    @Query("SELECT NEW org.example.datn_website_be.dto.response.ProductPromotionResponse(" +
+            "p.id,p.name,p.pricePerBaseUnit,p.quantity,p.baseUnit, " +
+            "COALESCE(pro.id, NULL), COALESCE(pro.codePromotion, NULL), COALESCE(pro.value, NULL), " +
+            "COALESCE(pro.endAt, NULL), COALESCE(prod.id, NULL), COALESCE(prod.quantity, 0.0),prod.status) " +
+            "FROM Product p " +
+            "LEFT JOIN p.promotionDetails prod WITH prod.status = 'ONGOING' " +
+            "LEFT JOIN prod.promotion pro WITH pro.status = 'ONGOING' " +
+            "WHERE p.status = 'ACTIVE'AND p.id = :idProduct")
+    Optional<ProductPromotionResponse> findProductDetailByIdProduct(@Param("idProduct") Long idProduct);
 }
