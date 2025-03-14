@@ -13,8 +13,6 @@ import java.math.BigDecimal;
 
 public class BillDetailStatisticalProductRespone {
 
-    private byte[] imageByte;
-
     private Long idProduct;
 
     private String nameProduct;
