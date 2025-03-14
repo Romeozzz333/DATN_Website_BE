@@ -1,6 +1,7 @@
 package org.example.datn_website_be.repository;
 
 import org.example.datn_website_be.dto.response.PayProductDetailResponse;
+import org.example.datn_website_be.dto.response.ProductPromotionResponse;
 import org.example.datn_website_be.dto.response.ProductResponse;
 import org.example.datn_website_be.dto.response.ProductViewCustomerReponse;
 import org.example.datn_website_be.model.Product;
@@ -84,4 +85,14 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
             "LEFT JOIN prod.promotion pro WITH pro.status = 'ONGOING' " +
             "WHERE p.status = 'ACTIVE' AND p.id = :idProduct")
     Optional<PayProductDetailResponse> findPayProductDetailByIdProductDetail(@Param("idProduct") Long idProduct);
+
+    @Query("SELECT NEW org.example.datn_website_be.dto.response.ProductPromotionResponse(" +
+            "p.id,p.name,p.pricePerBaseUnit,p.quantity,p.baseUnit, " +
+            "COALESCE(pro.id, NULL), COALESCE(pro.codePromotion, NULL), COALESCE(pro.value, NULL), " +
+            "COALESCE(pro.endAt, NULL), COALESCE(prod.id, NULL), COALESCE(prod.quantity, 0.0),prod.status) " +
+            "FROM Product p " +
+            "LEFT JOIN p.promotionDetails prod WITH prod.status = 'ONGOING' " +
+            "LEFT JOIN prod.promotion pro WITH pro.status = 'ONGOING' " +
+            "WHERE p.status = 'ACTIVE'")
+    List<ProductPromotionResponse> findProductPromotion();
 }
